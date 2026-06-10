@@ -193,11 +193,19 @@ ${original}${extras ? "\n\n[보조 정보]\n" + extras : ""}
     }
 
     const raw = data.choices?.[0]?.message?.content || "";
+    if (!raw) {
+      document.getElementById("results").innerHTML = `<div class="err">응답이 비어있습니다.\n${JSON.stringify(data)}</div>`;
+      return;
+    }
     const clean = raw.replace(/```json|```/g, "").trim();
     let parsed;
     try { parsed = JSON.parse(clean); }
     catch (e) {
       document.getElementById("results").innerHTML = `<div class="err">응답 파싱 실패\n${raw}</div>`;
+      return;
+    }
+    if (!parsed.styles || !Array.isArray(parsed.styles)) {
+      document.getElementById("results").innerHTML = `<div class="err">styles 배열 없음\n${raw}</div>`;
       return;
     }
     renderResults(parsed.styles);
