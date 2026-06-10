@@ -168,8 +168,9 @@ async function run() {
 [원본 글]
 ${original}${extras ? "\n\n[보조 정보]\n" + extras : ""}
 
-반드시 아래 JSON 형식으로만 답하세요. 마크다운 코드블록 없이 순수 JSON만 출력하세요:
-{"styles":[{"name":"따뜻하고 정감 있는 글","description":"현장의 온기와 감동이 느껴지는 따뜻한 문체","text":"내용"},{"name":"깔끔하고 정돈된 글","description":"명확하고 전문적인 공식 보고 스타일","text":"내용"},{"name":"생동감 있는 글","description":"현장감과 활력이 넘치는 생생한 문체","text":"내용"}]}`;
+반드시 아래 JSON 형식으로만 답하세요. 마크다운 코드블록 없이 순수 JSON만 출력하세요.
+중요: "text" 필드에 실제 다듬어진 글 내용을 넣어야 합니다. "description" 필드에는 스타일 설명만 한 줄로 넣으세요.
+{"styles":[{"name":"따뜻하고 정감 있는 글","description":"현장의 온기와 감동이 느껴지는 따뜻한 문체","text":"여기에 다듬어진 글 전체 내용"},{"name":"깔끔하고 정돈된 글","description":"명확하고 전문적인 공식 보고 스타일","text":"여기에 다듬어진 글 전체 내용"},{"name":"생동감 있는 글","description":"현장감과 활력이 넘치는 생생한 문체","text":"여기에 다듬어진 글 전체 내용"}]}`;
 
   try {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -208,6 +209,12 @@ ${original}${extras ? "\n\n[보조 정보]\n" + extras : ""}
       document.getElementById("results").innerHTML = `<div class="err">styles 배열 없음\n${raw}</div>`;
       return;
     }
+    // text 필드가 비어있으면 description 으로 대체
+    parsed.styles = parsed.styles.map(s => ({
+      ...s,
+      text: s.text && s.text.trim() ? s.text : s.description,
+      description: s.text && s.text.trim() ? s.description : "AI 생성 글"
+    }));
     renderResults(parsed.styles);
 
   } catch (e) {
