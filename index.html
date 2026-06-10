@@ -282,7 +282,7 @@ textarea::placeholder, input::placeholder { color: var(--text-3); }
 </div>
 
 <script>
-const API_KEY = "AQ.Ab8RN6KcRrL0cuTX2AtfDxcTdY_Qj1uclSXVEquSWgFB7MVwzw";
+const API_KEY = "여기에_API_키_붙여넣기";
 
 const STYLES = [
   { dot: "#6A9E64", name: "따뜻하고 정감 있는 글", desc: "현장의 온기와 감동이 느껴지는 따뜻한 문체" },
@@ -340,8 +340,7 @@ ${original}${extras ? "\n\n[보조 정보]\n" + extras : ""}
 {"styles":[{"name":"따뜻하고 정감 있는 글","description":"현장의 온기와 감동이 느껴지는 따뜻한 문체","text":"내용"},{"name":"깔끔하고 정돈된 글","description":"명확하고 전문적인 공식 보고 스타일","text":"내용"},{"name":"생동감 있는 글","description":"현장감과 활력이 넘치는 생생한 문체","text":"내용"}]}`;
 
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest
-:generateContent?key=${API_KEY}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
