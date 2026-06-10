@@ -198,7 +198,13 @@ ${original}${extras ? "\n\n[보조 정보]\n" + extras : ""}
       document.getElementById("results").innerHTML = `<div class="err">응답이 비어있습니다.\n${JSON.stringify(data)}</div>`;
       return;
     }
-    const clean = raw.replace(/```json|```/g, "").trim();
+    // JSON 추출 강화: 첫 { 부터 마지막 } 까지만 자르기
+    let clean = raw.replace(/```json|```/g, "").trim();
+    const firstBrace = clean.indexOf("{");
+    const lastBrace = clean.lastIndexOf("}");
+    if (firstBrace !== -1 && lastBrace !== -1) {
+      clean = clean.slice(firstBrace, lastBrace + 1);
+    }
     let parsed;
     try { parsed = JSON.parse(clean); }
     catch (e) {
