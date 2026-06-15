@@ -32,26 +32,11 @@
     line-height: 1.6;
   }
 
-  .wrap {
-    max-width: 680px;
-    margin: 0 auto;
-  }
+  .wrap { max-width: 680px; margin: 0 auto; }
 
-  header {
-    margin-bottom: 2rem;
-  }
-
-  header h1 {
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-    margin-bottom: 4px;
-  }
-
-  header p {
-    font-size: 14px;
-    color: var(--muted);
-  }
+  header { margin-bottom: 2rem; }
+  header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 4px; }
+  header p { font-size: 14px; color: var(--muted); }
 
   .card {
     background: var(--surface);
@@ -70,43 +55,6 @@
     margin-bottom: 6px;
   }
 
-  .key-wrap {
-    position: relative;
-    margin-bottom: 1rem;
-  }
-
-  .key-wrap input[type="password"],
-  .key-wrap input[type="text"] {
-    width: 100%;
-    padding: 9px 36px 9px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-family: 'SF Mono', 'Consolas', monospace;
-    background: var(--bg);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .key-wrap input:focus {
-    border-color: var(--accent);
-  }
-
-  .toggle-eye {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--muted);
-    font-size: 16px;
-    padding: 0;
-    line-height: 1;
-  }
-
   .upload-zone {
     border: 1.5px dashed var(--border);
     border-radius: var(--radius);
@@ -118,11 +66,8 @@
   }
 
   .upload-zone:hover, .upload-zone.drag { background: var(--accent-light); border-color: var(--accent); }
-
   .upload-zone svg { margin-bottom: 10px; opacity: 0.5; }
-
   .upload-zone .uz-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
-
   .upload-zone .uz-sub { font-size: 13px; color: var(--muted); }
 
   #fileInput { display: none; }
@@ -139,11 +84,8 @@
   }
 
   .file-chip .chip-icon { font-size: 20px; opacity: 0.6; flex-shrink: 0; }
-
   .file-chip .chip-name { font-size: 14px; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
   .file-chip .chip-size { font-size: 12px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
-
   .file-chip .chip-remove { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 18px; padding: 0; flex-shrink: 0; line-height: 1; }
 
   .run-btn {
@@ -178,9 +120,7 @@
   }
 
   .p-step.active { color: var(--text); font-weight: 500; }
-
   .p-step.done { color: var(--success); }
-
   .p-step .step-icon { width: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 
   .spinner {
@@ -208,7 +148,6 @@
 
   .tabs {
     display: flex;
-    gap: 0;
     border-bottom: 1px solid var(--border);
     margin-bottom: 1.25rem;
   }
@@ -231,28 +170,10 @@
   .tab-pane { display: none; }
   .tab-pane.active { display: block; }
 
-  .result-text {
-    font-size: 14px;
-    line-height: 1.9;
-    color: var(--text);
-    white-space: pre-wrap;
-    word-break: keep-all;
-  }
+  .result-text { font-size: 14px; line-height: 1.9; color: var(--text); white-space: pre-wrap; word-break: keep-all; }
+  .transcript-text { font-size: 13px; line-height: 1.8; color: var(--muted); white-space: pre-wrap; word-break: keep-all; }
 
-  .transcript-text {
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--muted);
-    white-space: pre-wrap;
-    word-break: keep-all;
-  }
-
-  .action-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 1.25rem;
-    flex-wrap: wrap;
-  }
+  .action-row { display: flex; gap: 8px; margin-top: 1.25rem; flex-wrap: wrap; }
 
   .act-btn {
     display: flex;
@@ -279,8 +200,7 @@
     <p>음성 파일을 올리면 요약과 회의록을 자동으로 만들어드려요</p>
   </header>
 
-
-
+  <div class="card">
     <div class="field-label">회의 녹음 파일</div>
     <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
          ondragover="event.preventDefault(); this.classList.add('drag')"
@@ -343,18 +263,14 @@
 
 </div>
 <script>
+  const OPENAI_KEY = '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';
+
   let file = null;
   let store = { summary: '', minutes: '', transcript: '' };
   let activeTab = 'summary';
 
-  function toggleKey() {
-    const el = document.getElementById('openaiKey');
-    el.type = el.type === 'password' ? 'text' : 'password';
-  }
-
   function checkReady() {
-    const key = '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';
-    document.getElementById('runBtn').disabled = !(file && key.startsWith('sk-'));
+    document.getElementById('runBtn').disabled = !file;
   }
 
   function handleDrop(e) {
@@ -407,7 +323,6 @@
   }
 
   async function run() {
-    const key = document.getElementById('openaiKey').value.trim();
     hideErr();
     document.getElementById('resultSection').style.display = 'none';
     document.getElementById('progressArea').style.display = 'block';
@@ -422,7 +337,7 @@
 
       const wRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + key },
+        headers: { 'Authorization': 'Bearer ' + OPENAI_KEY },
         body: fd
       });
       if (!wRes.ok) {
@@ -441,27 +356,7 @@
           max_tokens: 1000,
           messages: [{
             role: 'user',
-            content: `아래는 회의 녹음을 텍스트로 변환한 내용입니다. 두 섹션으로 나눠 정리해주세요.
-
-[SUMMARY]
-■ 회의 목적
-(1~2문장으로 간결하게)
-
-■ 핵심 논의 사항
-• (주요 내용 3~5개)
-
-■ 결정 사항
-• (합의/결정된 내용)
-
-■ 액션 아이템
-• (담당자 또는 주체 — 해야 할 일)
-
-[MINUTES]
-회의 흐름에 따라 전체 내용을 단락별로 정리해주세요. 발언자 구분이 어려우면 시간 순서로 내용을 나눠 작성하세요. 최대한 구체적이고 완전하게 작성해주세요.
-
----
-회의 내용:
-${store.transcript}`
+            content: `아래는 회의 녹음을 텍스트로 변환한 내용입니다. 두 섹션으로 나눠 정리해주세요.\n\n[SUMMARY]\n■ 회의 목적\n(1~2문장으로 간결하게)\n\n■ 핵심 논의 사항\n• (주요 내용 3~5개)\n\n■ 결정 사항\n• (합의/결정된 내용)\n\n■ 액션 아이템\n• (담당자 또는 주체 — 해야 할 일)\n\n[MINUTES]\n회의 흐름에 따라 전체 내용을 단락별로 정리해주세요. 발언자 구분이 어려우면 시간 순서로 내용을 나눠 작성하세요. 최대한 구체적이고 완전하게 작성해주세요.\n\n---\n회의 내용:\n${store.transcript}`
           }]
         })
       });
