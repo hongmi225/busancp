@@ -6,195 +6,57 @@
 <title>회의 녹음 정리</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #F7F6F2;
-    --surface: #FFFFFF;
-    --border: #E4E2DA;
-    --text: #1A1916;
-    --muted: #7A7870;
-    --accent: #2C5F8A;
-    --accent-light: #EAF1F8;
-    --success: #1D7A4A;
-    --success-bg: #E8F5EE;
-    --danger: #C0392B;
-    --danger-bg: #FDECEA;
-    --radius: 10px;
-    --radius-sm: 6px;
+    --bg: #F7F6F2; --surface: #FFFFFF; --border: #E4E2DA;
+    --text: #1A1916; --muted: #7A7870; --accent: #2C5F8A;
+    --accent-light: #EAF1F8; --success: #1D7A4A;
+    --danger: #C0392B; --danger-bg: #FDECEA;
+    --radius: 10px; --radius-sm: 6px;
   }
-
-  body {
-    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 2rem 1rem 4rem;
-    line-height: 1.6;
-  }
-
+  body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; line-height: 1.6; }
   .wrap { max-width: 680px; margin: 0 auto; }
-
   header { margin-bottom: 2rem; }
   header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 4px; }
   header p { font-size: 14px; color: var(--muted); }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .field-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .upload-zone {
-    border: 1.5px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 2.5rem 1rem;
-    text-align: center;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-    margin-bottom: 1rem;
-  }
-
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .upload-zone { border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 2.5rem 1rem; text-align: center; cursor: pointer; transition: background 0.15s, border-color 0.15s; margin-bottom: 1rem; }
   .upload-zone:hover, .upload-zone.drag { background: var(--accent-light); border-color: var(--accent); }
   .upload-zone svg { margin-bottom: 10px; opacity: 0.5; }
   .upload-zone .uz-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
   .upload-zone .uz-sub { font-size: 13px; color: var(--muted); }
-
   #fileInput { display: none; }
-
-  .file-chip {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    margin-bottom: 1rem;
-  }
-
-  .file-chip .chip-icon { font-size: 20px; opacity: 0.6; flex-shrink: 0; }
-  .file-chip .chip-name { font-size: 14px; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .file-chip .chip-size { font-size: 12px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
-  .file-chip .chip-remove { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 18px; padding: 0; flex-shrink: 0; line-height: 1; }
-
-  .run-btn {
-    width: 100%;
-    padding: 11px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: opacity 0.15s;
-  }
-
+  .file-chip { display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 1rem; }
+  .chip-icon { font-size: 20px; opacity: 0.6; flex-shrink: 0; }
+  .chip-name { font-size: 14px; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chip-size { font-size: 12px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .chip-remove { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 18px; padding: 0; flex-shrink: 0; line-height: 1; }
+  .run-btn { width: 100%; padding: 11px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.15s; }
   .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .run-btn:not(:disabled):hover { opacity: 0.88; }
-
   .progress-area { margin-top: 1rem; display: none; }
-
-  .p-step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    font-size: 14px;
-    color: var(--muted);
-  }
-
+  .p-step { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; color: var(--muted); }
   .p-step.active { color: var(--text); font-weight: 500; }
   .p-step.done { color: var(--success); }
   .p-step .step-icon { width: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
-  }
-
+  .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .err-box {
-    font-size: 13px;
-    color: var(--danger);
-    background: var(--danger-bg);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    margin-top: 10px;
-    display: none;
-  }
-
+  .err-box { font-size: 13px; color: var(--danger); background: var(--danger-bg); border-radius: var(--radius-sm); padding: 10px 12px; margin-top: 10px; display: none; }
   .result-section { display: none; }
-
-  .tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 1.25rem;
-  }
-
-  .tab-btn {
-    padding: 8px 16px;
-    font-size: 14px;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    color: var(--muted);
-    margin-bottom: -1px;
-    font-weight: 400;
-    transition: color 0.1s;
-  }
-
+  .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+  .tab-btn { padding: 8px 16px; font-size: 14px; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; color: var(--muted); margin-bottom: -1px; font-weight: 400; transition: color 0.1s; }
   .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
-
   .tab-pane { display: none; }
   .tab-pane.active { display: block; }
-
   .result-text { font-size: 14px; line-height: 1.9; color: var(--text); white-space: pre-wrap; word-break: keep-all; }
   .transcript-text { font-size: 13px; line-height: 1.8; color: var(--muted); white-space: pre-wrap; word-break: keep-all; }
-
   .action-row { display: flex; gap: 8px; margin-top: 1.25rem; flex-wrap: wrap; }
-
-  .act-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    padding: 7px 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--bg);
-    color: var(--text);
-    cursor: pointer;
-    transition: background 0.1s;
-  }
-
+  .act-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 7px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); cursor: pointer; transition: background 0.1s; }
   .act-btn:hover { background: var(--surface); }
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <header>
     <h1>🎙️ 회의 녹음 정리</h1>
     <p>음성 파일을 올리면 요약과 회의록을 자동으로 만들어드려요</p>
@@ -202,11 +64,17 @@
 
   <div class="card">
     <div class="field-label">회의 녹음 파일</div>
-    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
+    <div class="upload-zone" id="uploadZone"
+         onclick="document.getElementById('fileInput').click()"
          ondragover="event.preventDefault(); this.classList.add('drag')"
          ondragleave="this.classList.remove('drag')"
          ondrop="event.preventDefault(); this.classList.remove('drag'); handleDrop(event)">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="23"/>
+        <line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
       <div class="uz-title">클릭하거나 파일을 여기에 드래그</div>
       <div class="uz-sub">mp3 · mp4 · wav · m4a · ogg · webm / 최대 25MB</div>
     </div>
@@ -227,7 +95,7 @@
     <div class="err-box" id="errBox"></div>
 
     <div class="progress-area" id="progressArea">
-      <div class="p-step" id="ps1">
+      <div class="p-step active" id="ps1">
         <div class="step-icon"><span class="spinner"></span></div>
         음성 → 텍스트 변환 중…
       </div>
@@ -244,34 +112,22 @@
       <button class="tab-btn" onclick="switchTab('minutes', this)">전체 회의록</button>
       <button class="tab-btn" onclick="switchTab('transcript', this)">원본 텍스트</button>
     </div>
-
-    <div class="tab-pane active" id="pane-summary">
-      <div class="result-text" id="summaryText"></div>
-    </div>
-    <div class="tab-pane" id="pane-minutes">
-      <div class="result-text" id="minutesText"></div>
-    </div>
-    <div class="tab-pane" id="pane-transcript">
-      <div class="transcript-text" id="transcriptText"></div>
-    </div>
-
+    <div class="tab-pane active" id="pane-summary"><div class="result-text" id="summaryText"></div></div>
+    <div class="tab-pane" id="pane-minutes"><div class="result-text" id="minutesText"></div></div>
+    <div class="tab-pane" id="pane-transcript"><div class="transcript-text" id="transcriptText"></div></div>
     <div class="action-row">
       <button class="act-btn" onclick="copyActive(this)">📋 복사</button>
       <button class="act-btn" onclick="downloadActive()">⬇️ 텍스트 저장</button>
     </div>
   </div>
-
 </div>
+
 <script>
   const OPENAI_KEY = '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';
 
   let file = null;
   let store = { summary: '', minutes: '', transcript: '' };
   let activeTab = 'summary';
-
-  function checkReady() {
-    document.getElementById('runBtn').disabled = !file;
-  }
 
   function handleDrop(e) {
     const f = e.dataTransfer.files[0];
@@ -286,7 +142,7 @@
     document.getElementById('fileChip').style.display = 'flex';
     document.getElementById('chipName').textContent = f.name;
     document.getElementById('chipSize').textContent = (f.size / 1024 / 1024).toFixed(1) + ' MB';
-    checkReady();
+    document.getElementById('runBtn').disabled = false;
   }
 
   function removeFile() {
@@ -294,7 +150,7 @@
     document.getElementById('fileInput').value = '';
     document.getElementById('fileChip').style.display = 'none';
     document.getElementById('uploadZone').style.display = 'block';
-    checkReady();
+    document.getElementById('runBtn').disabled = true;
   }
 
   function showErr(msg) {
@@ -356,7 +212,7 @@
           max_tokens: 1000,
           messages: [{
             role: 'user',
-            content: `아래는 회의 녹음을 텍스트로 변환한 내용입니다. 두 섹션으로 나눠 정리해주세요.\n\n[SUMMARY]\n■ 회의 목적\n(1~2문장으로 간결하게)\n\n■ 핵심 논의 사항\n• (주요 내용 3~5개)\n\n■ 결정 사항\n• (합의/결정된 내용)\n\n■ 액션 아이템\n• (담당자 또는 주체 — 해야 할 일)\n\n[MINUTES]\n회의 흐름에 따라 전체 내용을 단락별로 정리해주세요. 발언자 구분이 어려우면 시간 순서로 내용을 나눠 작성하세요. 최대한 구체적이고 완전하게 작성해주세요.\n\n---\n회의 내용:\n${store.transcript}`
+            content: '아래는 회의 녹음을 텍스트로 변환한 내용입니다. 두 섹션으로 나눠 정리해주세요.\n\n[SUMMARY]\n■ 회의 목적\n(1~2문장으로 간결하게)\n\n■ 핵심 논의 사항\n• (주요 내용 3~5개)\n\n■ 결정 사항\n• (합의/결정된 내용)\n\n■ 액션 아이템\n• (담당자 또는 주체 — 해야 할 일)\n\n[MINUTES]\n회의 흐름에 따라 전체 내용을 단락별로 정리해주세요. 발언자 구분이 어려우면 시간 순서로 내용을 나눠 작성하세요. 최대한 구체적이고 완전하게 작성해주세요.\n\n---\n회의 내용:\n' + store.transcript
           }]
         })
       });
@@ -383,7 +239,6 @@
       document.getElementById('progressArea').style.display = 'none';
     } finally {
       document.getElementById('runBtn').disabled = false;
-      checkReady();
     }
   }
 
@@ -410,7 +265,7 @@
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     const date = new Date().toISOString().slice(0, 10);
-    a.download = `회의_${labels[activeTab]}_${date}.txt`;
+    a.download = '회의_' + labels[activeTab] + '_' + date + '.txt';
     a.click();
     URL.revokeObjectURL(a.href);
   }
