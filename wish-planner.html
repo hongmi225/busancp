@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WISH 숏폼 기획 도우미</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #888; margin-bottom: 1.5rem; }
+
+  .link-bar { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .link-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; color: #1a1a1a; text-decoration: none; }
+  .link-chip:hover { background: #f0f0ee; }
+
+  .card { background: #fff; border-radius: 12px; border: 1px solid #e8e8e6; padding: 1.25rem; margin-bottom: 1rem; }
+
+  label { font-size: 13px; color: #666; margin-bottom: 6px; display: block; }
+  textarea { width: 100%; min-height: 160px; resize: vertical; font-size: 14px; border: 1px solid #ddd; border-radius: 8px; padding: 10px 12px; font-family: inherit; line-height: 1.6; outline: none; }
+  textarea:focus { border-color: #888; }
+  select { width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: inherit; background: #fff; outline: none; }
+  select:focus { border-color: #888; }
+
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 160px; }
+
+  .btn { background: #1a1a1a; color: #fff; border: none; padding: 11px 22px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-top: 1rem; }
+  .btn:hover { background: #333; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .error { color: #d83a1d; font-size: 13px; margin-top: 8px; }
+
+  .result-card { background: #fff; border-radius: 12px; border: 1px solid #e8e8e6; padding: 1.25rem; margin-top: 1.5rem; display: none; }
+  .result-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .result-concept { font-size: 13px; color: #888; margin-bottom: 1rem; }
+  .divider { border: none; border-top: 1px solid #f0f0ee; margin: 1rem 0; }
+
+  .badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 8px; }
+  .badge-real { background: #e6f1fb; color: #185fa5; }
+  .badge-ai { background: #eeedfe; color: #3c3489; }
+  .badge-mix { background: #eaf3de; color: #3b6d11; }
+
+  .section-label { font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .section-gap { margin-bottom: 1.25rem; }
+
+  .hook-box { background: #f5f5f3; border-radius: 8px; padding: 12px 14px; font-size: 14px; line-height: 1.6; border-left: 3px solid #1a1a1a; }
+
+  .scene-item { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .scene-num { min-width: 22px; height: 22px; border-radius: 50%; background: #f0f0ee; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #888; flex-shrink: 0; margin-top: 2px; }
+  .scene-desc { font-size: 14px; line-height: 1.6; }
+  .scene-dur { color: #aaa; font-size: 12px; }
+
+  .narration-box { background: #f5f5f3; border-radius: 8px; padding: 12px 14px; font-size: 14px; line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { margin-left: auto; font-size: 12px; color: #aaa; cursor: pointer; background: none; border: none; padding: 0; display: flex; align-items: center; gap: 4px; }
+  .copy-btn:hover { color: #1a1a1a; }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { background: #f5f5f3; border: 1px solid #e8e8e6; border-radius: 100px; padding: 3px 10px; font-size: 13px; color: #444; }
+
+  .tip-box { font-size: 13px; color: #666; line-height: 1.7; }
+
+  .header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 1rem; }
+
+  .dots { display: inline-flex; gap: 4px; align-items: center; }
+  .dots span { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: pulse 1.2s infinite; }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>🎬 WISH 숏폼 기획 도우미</h1>
+  <p class="subtitle">공유복지플랫폼 칼럼 → 숏폼 영상 기획안 자동 생성</p>
+
+  <div class="link-bar">
+    <a class="link-chip" href="https://wish.welfare.seoul.kr/swflmsfront/board/boardlist.do?bmno=10016&pno=10011" target="_blank">
+      📖 지식칼럼 ↗
+    </a>
+    <a class="link-chip" href="https://www.youtube.com/@WelfareSeoul1/" target="_blank">
+      ▶ 서울시복지재단TV ↗
+    </a>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom: 1rem;">
+      <label>칼럼 본문 붙여넣기</label>
+      <textarea id="column-text" placeholder="wish.welfare.seoul.kr 칼럼 본문을 복사해서 여기에 붙여넣으세요."></textarea>
+    </div>
+    <div class="row">
+      <div>
+        <label>영상 길이</label>
+        <select id="duration">
+          <option value="60초 이내 숏폼">60초 이내 숏폼</option>
+          <option value="30초 이내 숏폼">30초 이내 숏폼</option>
+          <option value="3분 내외 영상">3분 내외 영상</option>
+        </select>
+      </div>
+      <div>
+        <label>제작 방식</label>
+        <select id="style">
+          <option value="자동 추천">자동 추천</option>
+          <option value="실사 촬영">실사 촬영</option>
+          <option value="AI 영상 생성">AI 영상 생성</option>
+          <option value="실사 + AI 혼합">실사 + AI 혼합</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" id="gen-btn" onclick="generate()">✦ 기획안 생성</button>
+    <div class="error" id="error-msg"></div>
+  </div>
+
+  <div class="result-card" id="result-card"></div>
+
+</div>
+
+<script>
+const API_KEY = '여기에_본인_키_붙여넣기';
+
+async function generate() {
+  const text = document.getElementById('column-text').value.trim();
+  if (!text) {
+    document.getElementById('error-msg').textContent = '칼럼 본문을 먼저 붙여넣어 주세요.';
+    return;
+  }
+  document.getElementById('error-msg').textContent = '';
+  const duration = document.getElementById('duration').value;
+  const style = document.getElementById('style').value;
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="dots"><span></span><span></span><span></span></span> 분석 중...';
+
+  const resultCard = document.getElementById('result-card');
+  resultCard.style.display = 'none';
+  resultCard.innerHTML = '';
+
+  const systemPrompt = `당신은 서울시복지재단 WISH 공유복지플랫폼의 숏폼 영상 기획 전문가입니다.
+복지 관련 칼럼을 분석해서 SNS 숏폼 영상 기획안을 만들어주세요.
+WISH 채널의 핵심 가치는 "참여-연결-확산"이며, 일반인에게 복지 정보를 친근하고 쉽게 전달하는 것이 목표입니다.
+혼자 제작하는 1인 크리에이터 기준으로 현실적인 기획을 해주세요.
+
+반드시 아래 JSON 형식으로만 응답하세요. 마크다운 코드블록 없이 JSON만 출력하세요:
+{
+  "title": "영상 제목 (20자 이내, 클릭하고 싶은 제목)",
+  "concept": "영상 콘셉트 한 줄 설명",
+  "production_type": "실사 촬영 | AI 영상 생성 | 실사 + AI 혼합 중 하나",
+  "production_reason": "위 제작 방식 추천 이유 (1-2문장)",
+  "hook": "첫 3초 훅 멘트 (시청자가 계속 보게 만드는 강렬한 첫 문장)",
+  "scenes": [
+    {"num": 1, "desc": "씬 설명", "duration": "초"},
+    {"num": 2, "desc": "씬 설명", "duration": "초"},
+    {"num": 3, "desc": "씬 설명", "duration": "초"},
+    {"num": 4, "desc": "씬 설명", "duration": "초"},
+    {"num": 5, "desc": "씬 설명", "duration": "초"}
+  ],
+  "narration": "전체 나레이션/자막 스크립트 (씬 번호 표시 포함)",
+  "bgm": "BGM 분위기 설명 및 추천 키워드",
+  "hashtags": ["태그1", "태그2", "태그3", "태그4", "태그5", "태그6"],
+  "tips": "1인 제작 시 주의사항 또는 팁"
+}`;
+
+  const userPrompt = `다음 칼럼을 분석해서 ${duration} 기획안을 만들어주세요.\n제작 방식 선호: ${style}\n\n=== 칼럼 본문 ===\n${text.slice(0, 3000)}`;
+
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      })
+    });
+
+    const data = await response.json();
+    const raw = data.choices[0].message.content;
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const plan = JSON.parse(clean);
+    renderResult(plan);
+  } catch (e) {
+    document.getElementById('error-msg').textContent = '기획안 생성 중 오류가 발생했습니다. 다시 시도해 주세요.';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✦ 기획안 생성';
+  }
+}
+
+function getBadge(type) {
+  if (!type) return '';
+  if (type.includes('AI') && type.includes('실사')) return `<span class="badge badge-mix">${type}</span>`;
+  if (type.includes('AI')) return `<span class="badge badge-ai">${type}</span>`;
+  return `<span class="badge badge-real">${type}</span>`;
+}
+
+function renderResult(p) {
+  const card = document.getElementById('result-card');
+  const scenesHtml = (p.scenes || []).map(s =>
+    `<div class="scene-item">
+      <div class="scene-num">${s.num}</div>
+      <div class="scene-desc">${s.desc} <span class="scene-dur">(${s.duration})</span></div>
+    </div>`
+  ).join('');
+  const hashHtml = (p.hashtags || []).map(h => `<span class="chip">#${h.replace(/^#/, '')}</span>`).join('');
+
+  card.innerHTML = `
+    <div class="header-row">
+      <div>
+        <div class="result-title">${p.title || ''}</div>
+        <div class="result-concept">${p.concept || ''}</div>
+      </div>
+      ${getBadge(p.production_type)}
+    </div>
+    <hr class="divider">
+
+    <div class="section-gap">
+      <div class="section-label">제작 방식 추천 이유</div>
+      <div style="font-size:13px;color:#666;line-height:1.7;">${p.production_reason || ''}</div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label">첫 3초 훅</div>
+      <div class="hook-box">${p.hook || ''}</div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label">씬 구성</div>
+      ${scenesHtml}
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label" style="display:flex;align-items:center;">
+        나레이션 / 자막 스크립트
+        <button class="copy-btn" onclick="copyText(this, '${encodeURIComponent(p.narration || '')}')">
+          📋 복사
+        </button>
+      </div>
+      <div class="narration-box">${p.narration || ''}</div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label">BGM</div>
+      <div style="font-size:13px;color:#444;line-height:1.7;">${p.bgm || ''}</div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label">해시태그</div>
+      <div class="chip-row">${hashHtml}</div>
+    </div>
+
+    ${p.tips ? `<hr class="divider">
+    <div class="section-gap">
+      <div class="section-label">💡 1인 제작 팁</div>
+      <div class="tip-box">${p.tips}</div>
+    </div>` : ''}
+  `;
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyText(btn, encoded) {
+  const text = decodeURIComponent(encoded);
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ 복사됨';
+    setTimeout(() => { btn.textContent = '📋 복사'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
