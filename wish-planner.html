@@ -28,7 +28,6 @@
   .btn-outline { background: transparent; color: #888; border: 1px solid #ddd; padding: 8px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-left: 8px; }
   .btn-outline:hover { border-color: #888; color: #1a1a1a; }
   .error { color: #d83a1d; font-size: 13px; margin-top: 8px; }
-  .success-msg { color: #3b6d11; font-size: 13px; margin-top: 8px; }
   .link-bar { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
   .link-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; color: #1a1a1a; text-decoration: none; }
   .link-chip:hover { background: #f0f0ee; }
@@ -39,19 +38,29 @@
   .result-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
   .result-concept { font-size: 13px; color: #888; margin-bottom: 1rem; }
   .divider { border: none; border-top: 1px solid #f0f0ee; margin: 1rem 0; }
-  .badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 8px; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 8px; white-space: nowrap; }
   .badge-real { background: #e6f1fb; color: #185fa5; }
   .badge-ai { background: #eeedfe; color: #3c3489; }
   .badge-mix { background: #eaf3de; color: #3b6d11; }
   .section-label { font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
   .section-gap { margin-bottom: 1.25rem; }
   .hook-box { background: #f5f5f3; border-radius: 8px; padding: 12px 14px; font-size: 14px; line-height: 1.6; border-left: 3px solid #1a1a1a; }
-  .scene-item { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
-  .scene-num { min-width: 22px; height: 22px; border-radius: 50%; background: #f0f0ee; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #888; flex-shrink: 0; margin-top: 2px; }
-  .scene-desc { font-size: 14px; line-height: 1.6; }
-  .scene-dur { color: #aaa; font-size: 12px; }
+  .scene-item { border: 1px solid #e8e8e6; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .scene-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .scene-num { min-width: 22px; height: 22px; border-radius: 50%; background: #1a1a1a; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #fff; flex-shrink: 0; }
+  .scene-desc { font-size: 14px; font-weight: 500; line-height: 1.5; color: #1a1a1a; }
+  .scene-dur { color: #aaa; font-size: 12px; font-weight: 400; }
+  .scene-meta { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+  .scene-meta-row { display: flex; gap: 6px; align-items: flex-start; }
+  .scene-meta-label { font-size: 11px; font-weight: 600; color: #fff; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
+  .label-visual { background: #378add; }
+  .label-mood { background: #1d9e75; }
+  .scene-meta-text { font-size: 13px; color: #555; line-height: 1.5; }
+  .mood-bar { display: flex; align-items: center; gap: 10px; background: #f5f5f3; border-radius: 8px; padding: 10px 14px; }
+  .mood-swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+  .mood-text { font-size: 13px; color: #444; line-height: 1.5; }
   .narration-box { background: #f5f5f3; border-radius: 8px; padding: 12px 14px; font-size: 14px; line-height: 1.8; white-space: pre-wrap; }
-  .copy-btn { margin-left: auto; font-size: 12px; color: #aaa; cursor: pointer; background: none; border: none; padding: 0; display: flex; align-items: center; gap: 4px; }
+  .copy-btn { margin-left: auto; font-size: 12px; color: #aaa; cursor: pointer; background: none; border: none; padding: 0; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
   .copy-btn:hover { color: #1a1a1a; }
   .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { background: #f5f5f3; border: 1px solid #e8e8e6; border-radius: 100px; padding: 3px 10px; font-size: 13px; color: #444; }
@@ -71,7 +80,6 @@
   <h1>🎬 WISH 숏폼 기획 도우미</h1>
   <p class="subtitle">공유복지플랫폼 칼럼 → 숏폼 영상 기획안 자동 생성</p>
 
-  <!-- API 키 설정 영역 -->
   <div class="card" id="key-card">
     <label>🔑 Groq API 키</label>
     <div id="key-input-area">
@@ -89,7 +97,6 @@
     </div>
   </div>
 
-  <!-- 메인 영역 -->
   <div id="main-area">
     <div class="link-bar">
       <a class="link-chip" href="https://wish.welfare.seoul.kr/swflmsfront/board/boardlist.do?bmno=10016&pno=10011" target="_blank">📖 지식칼럼 ↗</a>
@@ -131,21 +138,16 @@
 <script>
 function saveKey() {
   const key = document.getElementById('api-key-input').value.trim();
-  if (!key.startsWith('gsk_')) {
-    document.getElementById('key-error').textContent = 'gsk_로 시작하는 키를 입력해주세요.';
-    return;
-  }
+  if (!key.startsWith('gsk_')) { document.getElementById('key-error').textContent = 'gsk_로 시작하는 키를 입력해주세요.'; return; }
   localStorage.setItem('groq_api_key', key);
   document.getElementById('key-error').textContent = '';
   showKeySaved();
   document.getElementById('main-area').style.display = 'block';
 }
-
 function showKeySaved() {
   document.getElementById('key-input-area').style.display = 'none';
   document.getElementById('key-saved-area').style.display = 'block';
 }
-
 function resetKey() {
   localStorage.removeItem('groq_api_key');
   document.getElementById('api-key-input').value = '';
@@ -153,13 +155,9 @@ function resetKey() {
   document.getElementById('key-saved-area').style.display = 'none';
   document.getElementById('main-area').style.display = 'none';
 }
-
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('groq_api_key');
-  if (saved) {
-    showKeySaved();
-    document.getElementById('main-area').style.display = 'block';
-  }
+  if (saved) { showKeySaved(); document.getElementById('main-area').style.display = 'block'; }
 });
 
 async function generate() {
@@ -178,10 +176,33 @@ async function generate() {
 복지 관련 칼럼을 분석해서 SNS 숏폼 영상 기획안을 만들어주세요.
 WISH 채널의 핵심 가치는 "참여-연결-확산"이며, 일반인에게 복지 정보를 친근하고 쉽게 전달하는 것이 목표입니다.
 혼자 제작하는 1인 크리에이터 기준으로 현실적인 기획을 해주세요.
-반드시 아래 JSON 형식으로만 응답하세요. 마크다운 코드블록 없이 JSON만 출력하세요:
-{"title":"영상 제목 (20자 이내)","concept":"영상 콘셉트 한 줄 설명","production_type":"실사 촬영 | AI 영상 생성 | 실사 + AI 혼합 중 하나","production_reason":"추천 이유 1-2문장","hook":"첫 3초 훅 멘트","scenes":[{"num":1,"desc":"씬 설명","duration":"초"},{"num":2,"desc":"씬 설명","duration":"초"},{"num":3,"desc":"씬 설명","duration":"초"},{"num":4,"desc":"씬 설명","duration":"초"},{"num":5,"desc":"씬 설명","duration":"초"}],"narration":"전체 나레이션/자막 스크립트 (씬 번호 표시 포함)","bgm":"BGM 분위기 및 추천 키워드","hashtags":["태그1","태그2","태그3","태그4","태그5","태그6"],"tips":"1인 제작 시 팁"}`;
+CapCut으로 제작한다고 가정하고, 스톡영상(Pexels 등)을 활용할 수 있습니다.
 
-  const userPrompt = `다음 칼럼을 분석해서 ${duration} 기획안을 만들어주세요.\n제작 방식 선호: ${style}\n\n=== 칼럼 본문 ===\n${text.slice(0, 3000)}`;
+반드시 아래 JSON 형식으로만 응답하세요. 마크다운 코드블록 없이 JSON만 출력하세요:
+{
+  "title": "영상 제목 (20자 이내)",
+  "concept": "영상 콘셉트 한 줄 설명",
+  "production_type": "실사 촬영 | AI 영상 생성 | 실사 + AI 혼합 중 하나",
+  "production_reason": "추천 이유 1-2문장",
+  "overall_mood": "전체 영상 무드 및 컬러톤 방향 (예: 따뜻한 베이지+민트톤, 밝고 희망적인 분위기)",
+  "mood_color": "대표 색상 hex 코드 1개 (예: #A8D5BA)",
+  "hook": "첫 3초 훅 멘트",
+  "scenes": [
+    {
+      "num": 1,
+      "desc": "씬 설명",
+      "duration": "초",
+      "visual": "Pexels 검색 키워드 포함한 구체적인 영상/이미지 소스 설명 (영어 키워드 포함)",
+      "mood": "이 씬의 색감/분위기/편집 방향"
+    }
+  ],
+  "narration": "전체 나레이션/자막 스크립트 (씬 번호 표시 포함)",
+  "bgm": "BGM 분위기 설명 및 추천 키워드",
+  "hashtags": ["태그1","태그2","태그3","태그4","태그5","태그6"],
+  "tips": "CapCut 활용 팁 포함한 1인 제작 시 주의사항"
+}`;
+
+  const userPrompt = `다음 칼럼을 분석해서 ${duration} 기획안을 만들어주세요.\n제작 방식 선호: ${style}\n씬은 영상 길이에 맞게 적절한 개수로 구성해주세요.\n\n=== 칼럼 본문 ===\n${text.slice(0, 3000)}`;
 
   try {
     const apiKey = localStorage.getItem('groq_api_key');
@@ -189,10 +210,10 @@ WISH 채널의 핵심 가치는 "참여-연결-확산"이며, 일반인에게 �
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.3-70b-versatile',
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
         temperature: 0.7,
-        max_tokens: 1500
+        max_tokens: 2000
       })
     });
     const data = await response.json();
@@ -217,26 +238,77 @@ function getBadge(type) {
 
 function renderResult(p) {
   const card = document.getElementById('result-card');
-  const scenesHtml = (p.scenes||[]).map(s=>`<div class="scene-item"><div class="scene-num">${s.num}</div><div class="scene-desc">${s.desc} <span class="scene-dur">(${s.duration})</span></div></div>`).join('');
+
+  const scenesHtml = (p.scenes||[]).map(s=>`
+    <div class="scene-item">
+      <div class="scene-header">
+        <div class="scene-num">${s.num}</div>
+        <div class="scene-desc">${s.desc} <span class="scene-dur">(${s.duration})</span></div>
+      </div>
+      <div class="scene-meta">
+        <div class="scene-meta-row">
+          <span class="scene-meta-label label-visual">영상소스</span>
+          <span class="scene-meta-text">${s.visual||''}</span>
+        </div>
+        <div class="scene-meta-row">
+          <span class="scene-meta-label label-mood">무드</span>
+          <span class="scene-meta-text">${s.mood||''}</span>
+        </div>
+      </div>
+    </div>`).join('');
+
   const hashHtml = (p.hashtags||[]).map(h=>`<span class="chip">#${h.replace(/^#/,'')}</span>`).join('');
+  const swatchColor = p.mood_color || '#888888';
+
   card.innerHTML = `
     <div class="header-row">
       <div><div class="result-title">${p.title||''}</div><div class="result-concept">${p.concept||''}</div></div>
       ${getBadge(p.production_type)}
     </div>
     <hr class="divider">
-    <div class="section-gap"><div class="section-label">제작 방식 추천 이유</div><div style="font-size:13px;color:#666;line-height:1.7;">${p.production_reason||''}</div></div>
-    <div class="section-gap"><div class="section-label">첫 3초 훅</div><div class="hook-box">${p.hook||''}</div></div>
-    <div class="section-gap"><div class="section-label">씬 구성</div>${scenesHtml}</div>
+
     <div class="section-gap">
-      <div class="section-label" style="display:flex;align-items:center;">나레이션 / 자막 스크립트
+      <div class="section-label">전체 무드 & 컬러톤</div>
+      <div class="mood-bar">
+        <div class="mood-swatch" style="background:${swatchColor};"></div>
+        <div class="mood-text">${p.overall_mood||''}</div>
+      </div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label">제작 방식 추천 이유</div>
+      <div style="font-size:13px;color:#666;line-height:1.7;">${p.production_reason||''}</div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label">첫 3초 훅</div>
+      <div class="hook-box">${p.hook||''}</div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label">씬 구성</div>
+      ${scenesHtml}
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label" style="display:flex;align-items:center;">
+        나레이션 / 자막 스크립트
         <button class="copy-btn" onclick="copyText(this,'${encodeURIComponent(p.narration||'')}')">📋 복사</button>
       </div>
       <div class="narration-box">${p.narration||''}</div>
     </div>
-    <div class="section-gap"><div class="section-label">BGM</div><div style="font-size:13px;color:#444;line-height:1.7;">${p.bgm||''}</div></div>
-    <div class="section-gap"><div class="section-label">해시태그</div><div class="chip-row">${hashHtml}</div></div>
-    ${p.tips?`<hr class="divider"><div class="section-gap"><div class="section-label">💡 1인 제작 팁</div><div class="tip-box">${p.tips}</div></div>`:''}
+
+    <div class="section-gap">
+      <div class="section-label">BGM</div>
+      <div style="font-size:13px;color:#444;line-height:1.7;">${p.bgm||''}</div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-label">해시태그</div>
+      <div class="chip-row">${hashHtml}</div>
+    </div>
+
+    ${p.tips?`<hr class="divider"><div class="section-gap"><div class="section-label">💡 CapCut 제작 팁</div><div class="tip-box">${p.tips}</div></div>`:''}
   `;
   card.style.display = 'block';
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
