@@ -228,7 +228,7 @@ CapCut으로 제작한다고 가정하고, 스톡영상(Pexels 등)을 활용할
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 2000 }
+        generationConfig: { temperature: 0.7, maxOutputTokens: 4000 }
       })
     });
     const data = await response.json();
