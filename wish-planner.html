@@ -210,19 +210,25 @@ CapCut으로 제작한다고 가정하고, 스톡영상(Pexels 등)을 활용할
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: 'mixtral-8x7b-32768',
+        model: 'llama-3.3-70b-versatile',
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
         temperature: 0.7,
         max_tokens: 2000
       })
     });
     const data = await response.json();
+    if (data.error) {
+      document.getElementById('error-msg').textContent = `API 오류: ${data.error.message}`;
+      return;
+    }
     const raw = data.choices[0].message.content;
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const plan = JSON.parse(clean);
+    // JSON 블록 추출 — 중괄호 사이 내용만 파싱
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('JSON 파싱 실패');
+    const plan = JSON.parse(jsonMatch[0]);
     renderResult(plan);
   } catch(e) {
-    document.getElementById('error-msg').textContent = '기획안 생성 중 오류가 발생했습니다. 다시 시도해 주세요.';
+    document.getElementById('error-msg').textContent = `오류: ${e.message} — 다시 시도해 주세요.`;
   } finally {
     btn.disabled = false;
     btn.innerHTML = '✦ 기획안 생성';
