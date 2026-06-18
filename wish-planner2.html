@@ -178,11 +178,17 @@ async function generate() {
   const resultCard = document.getElementById('result-card');
   resultCard.style.display = 'none';
 
-  const systemPrompt = `WISH 숏폼 영상 기획 전문가. 한국어로만 답변. 영상소스 Pexels 키워드만 영어 허용.
-JSON만 출력. 마크다운 없음. scenes 각 항목에 num,desc,duration,visual,mood,narration_formal,narration_casual 필수.
-narration_formal/casual은 각 씬 자막 한 문장씩. full_narration_formal/casual은 전체 연결 스크립트.
+  const systemPrompt = `You are a Korean short-form video planning expert. Respond ONLY with valid JSON, no other text, no markdown, no explanation.
 
-{"title":"20자이내제목","concept":"콘셉트한줄","summary":"3문장이내요약","key_sentences":["핵심1","핵심2","핵심3"],"production_type":"실사 촬영|AI 영상 생성|실사 + AI 혼합","production_reason":"추천이유","overall_mood":"무드설명","mood_color":"#헥스코드","hook":"첫3초훅","scenes":[{"num":1,"desc":"씬제목","duration":"초","visual":"Pexels english keywords","mood":"분위기","narration_formal":"공식자막","narration_casual":"친구자막"}],"full_narration_formal":"공식전체스크립트","full_narration_casual":"친구전체스크립트","bgm":"BGM설명","hashtags":["태그1","태그2","태그3","태그4","태그5"],"tips":"CapCut팁"}`;
+JSON schema:
+{"title":"string","concept":"string","summary":"string","key_sentences":["string","string","string"],"production_type":"string","production_reason":"string","overall_mood":"string","mood_color":"string","hook":"string","scenes":[{"num":1,"desc":"string","duration":"string","visual":"string in English","mood":"string","narration_formal":"string","narration_casual":"string"}],"full_narration_formal":"string","full_narration_casual":"string","bgm":"string","hashtags":["string"],"tips":"string"}
+
+Rules:
+- All values in Korean except visual field (English only)
+- production_type: "실사 촬영" or "AI 영상 생성" or "실사 + AI 혼합"
+- narration_formal/casual: one sentence per scene
+- full_narration_formal/casual: all scenes connected naturally
+- Output ONLY the JSON object, nothing else`;
 
   const title_input = document.getElementById('column-title').value.trim();
   const userPrompt = `다음 칼럼을 분석해서 ${duration} 기획안을 만들어주세요.\n제작 방식 선호: ${style}\n씬은 영상 길이에 맞게 적절한 개수로 구성해주세요.\n\n=== 칼럼 제목 ===\n${title_input || '(제목 없음)'}\n\n=== 칼럼 본문 ===\n${text.slice(0, 3000)}`;
