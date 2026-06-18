@@ -55,6 +55,7 @@
   .scene-meta-label { font-size: 11px; font-weight: 600; color: #fff; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
   .label-visual { background: #378add; }
   .label-mood { background: #1d9e75; }
+  .label-narration { background: #e07b3a; }
   .scene-meta-text { font-size: 13px; color: #555; line-height: 1.5; }
   .mood-bar { display: flex; align-items: center; gap: 10px; background: #f5f5f3; border-radius: 8px; padding: 10px 14px; }
   .mood-swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
@@ -193,10 +194,11 @@ CapCut으로 제작한다고 가정하고, 스톡영상(Pexels 등)을 활용할
       "desc": "씬 설명",
       "duration": "초",
       "visual": "Pexels 검색 키워드 포함한 구체적인 영상/이미지 소스 설명 (영어 키워드 포함)",
-      "mood": "이 씬의 색감/분위기/편집 방향"
+      "mood": "이 씬의 색감/분위기/편집 방향",
+      "narration": "이 씬에서 표시될 자막/나레이션 텍스트"
     }
   ],
-  "narration": "전체 나레이션/자막 스크립트 (씬 번호 표시 포함)",
+  "narration": "전체 나레이션/자막 스크립트 (씬 번호 표시 포함, 위 씬별 narration을 모아서 자연스럽게 연결한 버전)",
   "bgm": "BGM 분위기 설명 및 추천 키워드",
   "hashtags": ["태그1","태그2","태그3","태그4","태그5","태그6"],
   "tips": "CapCut 활용 팁 포함한 1인 제작 시 주의사항"
@@ -260,6 +262,10 @@ function renderResult(p) {
           <span class="scene-meta-label label-mood">무드</span>
           <span class="scene-meta-text">${s.mood||''}</span>
         </div>
+        ${s.narration ? `<div class="scene-meta-row">
+          <span class="scene-meta-label label-narration">자막</span>
+          <span class="scene-meta-text">${s.narration}</span>
+        </div>` : ''}
       </div>
     </div>`).join('');
 
