@@ -144,7 +144,7 @@
 <script>
 function saveKey() {
   const key = document.getElementById('api-key-input').value.trim();
-  if (!key.startsWith('AIza') && !key.startsWith('AQ')) { document.getElementById('key-error').textContent = 'AIza로 시작하는 Gemini API 키를 입력해주세요.'; return; }
+  if (key.length < 10) { document.getElementById('key-error').textContent = 'API 키를 다시 확인해주세요.'; return; }
   localStorage.setItem('gemini_api_key', key);
   document.getElementById('key-error').textContent = '';
   showKeySaved();
