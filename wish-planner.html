@@ -107,6 +107,10 @@
 
     <div class="card">
       <div style="margin-bottom:1rem;">
+        <label>칼럼 제목</label>
+        <input type="text" id="column-title" placeholder="칼럼 제목을 입력하세요 (선택)">
+      </div>
+      <div style="margin-bottom:1rem;">
         <label>칼럼 본문 붙여넣기</label>
         <textarea id="column-text" placeholder="wish.welfare.seoul.kr 칼럼 본문을 복사해서 여기에 붙여넣으세요."></textarea>
       </div>
@@ -185,6 +189,8 @@ CapCut으로 제작한다고 가정하고, 스톡영상(Pexels 등)을 활용할
 {
   "title": "영상 제목 (20자 이내)",
   "concept": "영상 콘셉트 한 줄 설명",
+  "summary": "칼럼 내용 요약 (3문장 이내, 핵심 메시지 중심)",
+  "key_sentences": ["핵심문장1", "핵심문장2", "핵심문장3"],
   "production_type": "실사 촬영 | AI 영상 생성 | 실사 + AI 혼합 중 하나",
   "production_reason": "추천 이유 1-2문장",
   "overall_mood": "전체 영상 무드 및 컬러톤 방향 (예: 따뜻한 베이지+민트톤, 밝고 희망적인 분위기)",
@@ -207,7 +213,8 @@ CapCut으로 제작한다고 가정하고, 스톡영상(Pexels 등)을 활용할
   "tips": "CapCut 활용 팁 포함한 1인 제작 시 주의사항"
 }`;
 
-  const userPrompt = `다음 칼럼을 분석해서 ${duration} 기획안을 만들어주세요.\n제작 방식 선호: ${style}\n씬은 영상 길이에 맞게 적절한 개수로 구성해주세요.\n\n=== 칼럼 본문 ===\n${text.slice(0, 3000)}`;
+  const title_input = document.getElementById('column-title').value.trim();
+  const userPrompt = `다음 칼럼을 분석해서 ${duration} 기획안을 만들어주세요.\n제작 방식 선호: ${style}\n씬은 영상 길이에 맞게 적절한 개수로 구성해주세요.\n\n=== 칼럼 제목 ===\n${title_input || '(제목 없음)'}\n\n=== 칼럼 본문 ===\n${text.slice(0, 3000)}`;
 
   try {
     const apiKey = localStorage.getItem('groq_api_key');
@@ -284,6 +291,19 @@ function renderResult(p) {
       <div><div class="result-title">${p.title||''}</div><div class="result-concept">${p.concept||''}</div></div>
       ${getBadge(p.production_type)}
     </div>
+    <hr class="divider">
+
+    <div class="section-gap">
+      <div class="section-label">📋 내용 요약</div>
+      <div style="font-size:14px;color:#444;line-height:1.8;background:#f5f5f3;border-radius:8px;padding:12px 14px;">${p.summary||''}</div>
+    </div>
+
+    ${p.key_sentences && p.key_sentences.length ? `<div class="section-gap">
+      <div class="section-label">💬 핵심 문장</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${p.key_sentences.map(s=>`<div style="display:flex;gap:8px;align-items:flex-start;"><span style="color:#e07b3a;font-weight:700;flex-shrink:0;">✦</span><span style="font-size:14px;color:#1a1a1a;line-height:1.6;">${s}</span></div>`).join('')}
+      </div>
+    </div>` : ''}
     <hr class="divider">
 
     <div class="section-gap">
