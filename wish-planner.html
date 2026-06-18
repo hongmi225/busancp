@@ -197,8 +197,8 @@ CapCut으로 제작한다고 가정하고, 스톡영상(Pexels 등)을 활용할
       "duration": "몇 초",
       "visual": "Pexels 영어 검색 키워드 포함한 영상/이미지 소스 설명",
       "mood": "이 씬의 색감/분위기/편집 방향",
-      "narration_formal": "이 씬 자막 - 공식적/정보전달 톤 (반드시 작성)",
-      "narration_casual": "이 씬 자막 - 친구에게 말하듯 편한 톤 (반드시 작성)"
+      "narration_formal": "이 씬 자막 - 공식적/정보전달 톤으로 작성. 예) '2026년부터 장애인 활동지원 서비스가 확대됩니다.'",
+      "narration_casual": "이 씬 자막 - 친구에게 말하듯 편하고 구어체로 작성. 예) '있잖아, 내년부터 활동지원 시간이 더 늘어난대!'  (narration_formal과 반드시 다른 문장으로 작성)"
     }
   ],
   "narration": "전체 풀 스크립트 (씬 번호 없이 자연스럽게 이어지는 하나의 문단으로, 공식 톤 기준)",
@@ -266,11 +266,11 @@ function renderResult(p) {
           <span class="scene-meta-text">${s.mood||''}</span>
         </div>
         <div class="scene-meta-row">
-          <span class="scene-meta-label label-narration">공식</span>
+          <span class="scene-meta-label label-narration">자막(공식)</span>
           <span class="scene-meta-text">${s.narration_formal||'—'}</span>
         </div>
         <div class="scene-meta-row">
-          <span class="scene-meta-label label-casual">친구</span>
+          <span class="scene-meta-label label-casual">자막(친구)</span>
           <span class="scene-meta-text">${s.narration_casual||'—'}</span>
         </div>
       </div>
