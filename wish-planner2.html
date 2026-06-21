@@ -187,7 +187,7 @@ JSON schema:
 
 Rules:
 - Korean only, except visual(English)
-- 3-5 scenes max
+- 6-9 scenes, each 3-8 seconds — short punchy scenes for fast-paced short-form rhythm, NOT 3-5 long scenes
 - production_type: "실사 촬영"|"AI 영상 생성"|"실사 + AI 혼합"
 - Each scene's visual differs from others (subject/angle/setting)
 - scene 1's narration_formal and narration_casual MUST be based on the hook (same core message as hook, can rephrase slightly for tone match) — the hook IS scene 1's opening line, not a separate line
@@ -204,7 +204,7 @@ Rules:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 8000 }
+        generationConfig: { temperature: 0.7, maxOutputTokens: 12000 }
       })
     });
     const data = await response.json();
