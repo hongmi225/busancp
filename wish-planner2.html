@@ -57,6 +57,8 @@
   .label-mood { background: #1d9e75; }
   .label-narration { background: #e07b3a; }
   .label-casual { background: #c45ab3; }
+  .label-pace { background: #2a8fa8; }
+  .label-sfx { background: #a87f2a; }
   .scene-meta-text { font-size: 13px; color: #555; line-height: 1.5; }
   .mood-bar { display: flex; align-items: center; gap: 10px; background: #f5f5f3; border-radius: 8px; padding: 10px 14px; }
   .mood-swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
@@ -181,13 +183,16 @@ async function generate() {
   const systemPrompt = `You are a Korean short-form video planning expert. Respond ONLY with valid JSON, no other text, no markdown, no explanation.
 
 JSON schema:
-{"title":"string","concept":"string","summary":"string","key_sentences":["string","string","string"],"production_type":"string","production_reason":"string","overall_mood":"string","mood_color":"string","hook":"string","scenes":[{"num":1,"desc":"string","duration":"string","visual":"string in English","mood":"string","narration_formal":"string","narration_casual":"string"}],"full_narration_formal":"string","full_narration_casual":"string","bgm":"string","hashtags":["string"],"tips":"string"}
+{"title":"string","concept":"string","summary":"string","key_sentences":["string","string","string"],"production_type":"string","production_reason":"string","overall_mood":"string","mood_color":"string","hook":"string","scenes":[{"num":1,"desc":"string","duration":"string","visual":"string in English, must differ in subject/angle/setting from other scenes to avoid repetitive look","mood":"string","pace":"string - editing pace guide like '빠른 컷 전환 (1.5초 내외)' or '잔잔하게 유지'","sfx":"string - sound effect keyword for this scene's key message, e.g. '딩 알림음', '북 효과음', empty string if none needed","narration_formal":"string, wrap the single most important word/phrase in **double asterisks** for emphasis","narration_casual":"string, wrap the single most important word/phrase in **double asterisks** for emphasis"}],"ending_scene":{"desc":"엔딩 고정 씬 설명","narration":"칼럼 소개 및 wish.welfare.seoul.kr 홈페이지 안내 멘트","logo_note":"서울시복지재단 로고 + WISH 로고 삽입 안내"},"full_narration_formal":"string","full_narration_casual":"string","bgm":"string, include tempo suggestion like '업비트, 120bpm 이상'","hashtags":["string"],"tips":"string, include CapCut tip about adding WISH watermark logo at bottom throughout video"}
 
 Rules:
 - All values in Korean except visual field (English only)
 - production_type: "실사 촬영" or "AI 영상 생성" or "실사 + AI 혼합"
-- narration_formal/casual: one sentence per scene
-- full_narration_formal/casual: all scenes connected naturally
+- narration_formal/casual: one sentence per scene, with the key phrase wrapped in **asterisks**
+- full_narration_formal/casual: all scenes connected naturally (without asterisks, plain text)
+- Each scene's visual must use a different subject, camera angle, or setting — avoid visually repetitive scenes
+- pace: suggest faster cuts overall (most scenes 1-2 seconds of footage variety even within one scene's duration)
+- ending_scene: always include a closing scene that mentions the column source and invites viewers to visit wish.welfare.seoul.kr, plus a note to insert 서울시복지재단 logo and WISH logo
 - Output ONLY the JSON object, nothing else`;
 
   const title_input = document.getElementById('column-title').value.trim();
@@ -225,6 +230,11 @@ Rules:
   }
 }
 
+function emphasize(text) {
+  if (!text) return '';
+  return text.replace(/\*\*(.+?)\*\*/g, '<span style="color:#d83a1d;font-weight:700;font-size:1.05em;">$1</span>');
+}
+
 function getBadge(type) {
   if (!type) return '';
   if (type.includes('AI') && type.includes('실사')) return `<span class="badge badge-mix">${type}</span>`;
@@ -250,13 +260,21 @@ function renderResult(p) {
           <span class="scene-meta-label label-mood">무드</span>
           <span class="scene-meta-text">${s.mood||''}</span>
         </div>
+        ${s.pace ? `<div class="scene-meta-row">
+          <span class="scene-meta-label label-pace">편집속도</span>
+          <span class="scene-meta-text">${s.pace}</span>
+        </div>` : ''}
+        ${s.sfx ? `<div class="scene-meta-row">
+          <span class="scene-meta-label label-sfx">효과음</span>
+          <span class="scene-meta-text">${s.sfx}</span>
+        </div>` : ''}
         <div class="scene-meta-row">
           <span class="scene-meta-label label-narration">자막(공식)</span>
-          <span class="scene-meta-text">${s.narration_formal||'—'}</span>
+          <span class="scene-meta-text">${emphasize(s.narration_formal)||'—'}</span>
         </div>
         <div class="scene-meta-row">
           <span class="scene-meta-label label-casual">자막(친구)</span>
-          <span class="scene-meta-text">${s.narration_casual||'—'}</span>
+          <span class="scene-meta-text">${emphasize(s.narration_casual)||'—'}</span>
         </div>
       </div>
     </div>`).join('');
@@ -306,6 +324,23 @@ function renderResult(p) {
       <div class="section-label">씬 구성</div>
       ${scenesHtml}
     </div>
+
+    ${p.ending_scene ? `<div class="section-gap">
+      <div class="section-label">🏁 엔딩 (고정)</div>
+      <div class="scene-item" style="border-color:#c45ab3;background:#fbf5fa;">
+        <div class="scene-desc" style="margin-bottom:8px;">${p.ending_scene.desc||''}</div>
+        <div class="scene-meta">
+          <div class="scene-meta-row">
+            <span class="scene-meta-label label-narration">안내자막</span>
+            <span class="scene-meta-text">${p.ending_scene.narration||''}</span>
+          </div>
+          <div class="scene-meta-row">
+            <span class="scene-meta-label" style="background:#888;">로고</span>
+            <span class="scene-meta-text">${p.ending_scene.logo_note||'서울시복지재단 로고 + WISH 로고 삽입'}</span>
+          </div>
+        </div>
+      </div>
+    </div>` : ''}
 
     <div class="section-gap">
       <div class="section-label">📋 전체 스크립트</div>
