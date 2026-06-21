@@ -260,7 +260,7 @@ function renderResult(p) {
       <div class="scene-meta">
         <div class="scene-meta-row">
           <span class="scene-meta-label label-visual">영상소스</span>
-          <span class="scene-meta-text">${s.visual||''}</span>
+          <span class="scene-meta-text">${s.visual||''} <button class="copy-btn" style="display:inline-flex;margin-left:6px;" onclick="copyText(this,'${encodeURIComponent(s.visual||'')}')">📋 복사</button></span>
         </div>
         <div class="scene-meta-row">
           <span class="scene-meta-label label-mood">무드</span>
