@@ -59,6 +59,7 @@
   .label-casual { background: #c45ab3; }
   .label-pace { background: #2a8fa8; }
   .label-sfx { background: #a87f2a; }
+  .label-bgm { background: #5a8f3e; }
   .scene-meta-text { font-size: 13px; color: #555; line-height: 1.5; }
   .mood-bar { display: flex; align-items: center; gap: 10px; background: #f5f5f3; border-radius: 8px; padding: 10px 14px; }
   .mood-swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
@@ -183,7 +184,7 @@ async function generate() {
   const systemPrompt = `You are a Korean short-form video planning expert. Respond ONLY with valid JSON, no markdown, no explanation. Be concise — short phrases, not long sentences, in every field.
 
 JSON schema:
-{"title":"string","concept":"string","summary":"string(short)","key_sentences":["string","string","string"],"production_type":"string","production_reason":"string(short)","overall_mood":"string","mood_color":"string","hook":"string","scenes":[{"num":1,"desc":"string(short)","duration":"string","visual":"English keywords, vary subject/angle per scene","mood":"string(short)","pace":"string(short, e.g. '빠른 컷')","sfx":"string(short) or empty","narration_formal":"string with **key phrase** wrapped once","narration_casual":"string with **key phrase** wrapped once"}],"ending_scene":{"desc":"string(short)","narration":"mentions wish.welfare.seoul.kr","logo_note":"서울시복지재단+WISH 로고"},"full_narration_formal":"string","full_narration_casual":"string","bgm":"string(short, with bpm)","hashtags":["string"],"caption":"string - Instagram/YouTube post caption, 2-4 sentences with line breaks, friendly tone, ends with a question or call-to-action, includes 1-2 emojis, does NOT repeat hashtags (those go separately)","tips":"string(short, mention WISH 워터마크)"}
+{"title":"string","concept":"string","summary":"string(short)","key_sentences":["string","string","string"],"production_type":"string","production_reason":"string(short)","overall_mood":"string","mood_color":"string","hook":"string","scenes":[{"num":1,"desc":"string(short)","duration":"string","visual":"English keywords, vary subject/angle per scene","mood":"string(short)","pace":"string(short, e.g. '빠른 컷')","sfx":"string(short) or empty","bgm_keyword":"English search keyword for Pixabay Music matching this scene's mood, e.g. 'upbeat corporate', 'tense suspense', 'warm acoustic'","narration_formal":"string with **key phrase** wrapped once","narration_casual":"string with **key phrase** wrapped once"}],"ending_scene":{"desc":"string(short)","narration":"mentions wish.welfare.seoul.kr","logo_note":"서울시복지재단+WISH 로고"},"full_narration_formal":"string","full_narration_casual":"string","bgm":"string(short, with bpm)","hashtags":["string"],"caption":"string - Instagram/YouTube post caption, 2-4 sentences with line breaks, friendly tone, ends with a question or call-to-action, includes 1-2 emojis, does NOT repeat hashtags (those go separately)","tips":"string(short, mention WISH 워터마크)"}
 
 Rules:
 - Korean only, except visual(English)
@@ -268,6 +269,10 @@ function renderResult(p) {
         ${s.sfx ? `<div class="scene-meta-row">
           <span class="scene-meta-label label-sfx">효과음</span>
           <span class="scene-meta-text">${s.sfx}</span>
+        </div>` : ''}
+        ${s.bgm_keyword ? `<div class="scene-meta-row">
+          <span class="scene-meta-label label-bgm">BGM</span>
+          <span class="scene-meta-text">${s.bgm_keyword} <a href="https://pixabay.com/music/search/${encodeURIComponent(s.bgm_keyword)}/" target="_blank" style="color:#378add;text-decoration:none;font-size:12px;">🔗 Pixabay에서 찾기</a></span>
         </div>` : ''}
         <div class="scene-meta-row">
           <span class="scene-meta-label label-narration">자막(공식)</span>
@@ -365,6 +370,7 @@ function renderResult(p) {
     <div class="section-gap">
       <div class="section-label">BGM</div>
       <div style="font-size:13px;color:#444;line-height:1.7;">${p.bgm||''}</div>
+      <div style="font-size:12px;color:#aaa;margin-top:6px;">💡 씬마다 다른 무드면 위 씬 구성의 BGM 링크를 활용하고, 전체 통일감이 필요하면 이 분위기로 하나만 골라써도 좋아요</div>
     </div>
 
     ${p.caption ? `<div class="section-gap">
