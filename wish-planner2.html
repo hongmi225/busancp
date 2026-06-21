@@ -244,13 +244,14 @@ function getBadge(type) {
 function renderResult(p) {
   const card = document.getElementById('result-card');
 
-  const scenesHtml = (p.scenes||[]).map(s=>`
+  const scenesHtml = (p.scenes||[]).map((s,idx)=>`
     <div class="scene-item">
       <div class="scene-header">
         <div class="scene-num">${s.num}</div>
         <div class="scene-desc">${s.desc} <span class="scene-dur">(${s.duration})</span></div>
-        ${s.num === 1 ? `<span class="badge" style="background:#1a1a1a;color:#fff;margin-left:auto;">⚡ 첫 3초 훅</span>` : ''}
+        ${idx === 0 ? `<span class="badge" style="background:#1a1a1a;color:#fff;margin-left:auto;">⚡ 첫 3초 훅</span>` : ''}
       </div>
+      ${idx === 0 && p.hook ? `<div class="hook-box" style="margin-bottom:8px;">🎬 ${p.hook}</div>` : ''}
       <div class="scene-meta">
         <div class="scene-meta-row">
           <span class="scene-meta-label label-visual">영상소스</span>
