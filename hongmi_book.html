@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>독서 기록 도우미</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+    background: #faf7f2;
+    color: #2b2b2b;
+    padding: 24px 16px 60px;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0 0 4px;
+  }
+  p.subtitle {
+    font-size: 13px;
+    color: #888;
+    margin: 0 0 20px;
+  }
+  .search-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  input[type="text"] {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+  }
+  input[type="text"]:focus {
+    border-color: #c9a87c;
+  }
+  button {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  button:hover { opacity: 0.85; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary {
+    background: #c9a87c;
+    color: #fff;
+  }
+  .status {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 12px;
+    min-height: 18px;
+  }
+  .book-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .book-card {
+    display: flex;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .book-card:hover {
+    border-color: #c9a87c;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .book-card.selected {
+    border-color: #c9a87c;
+    background: #fdf8f0;
+  }
+  .book-thumb {
+    width: 56px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #eee;
+    flex-shrink: 0;
+  }
+  .book-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .book-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .book-meta {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.4;
+  }
+  .save-panel {
+    margin-top: 24px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .save-panel.hidden { display: none; }
+  .selected-book {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .selected-book img {
+    width: 64px;
+    height: 92px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #eee;
+  }
+  .format-options {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .format-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .format-btn.active {
+    background: #2b2b2b;
+    color: #fff;
+    border-color: #2b2b2b;
+  }
+  .save-btn {
+    width: 100%;
+    background: #2b2b2b;
+    color: #fff;
+    padding: 14px;
+    font-size: 15px;
+  }
+  .save-btn:disabled {
+    background: #ccc;
+  }
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2b2b2b;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📗 독서 기록 등록</h1>
+  <p class="subtitle">책 제목이나 ISBN을 입력하면 정보를 자동으로 채워드려요.</p>
+
+  <div class="search-box">
+    <input type="text" id="queryInput" placeholder="책 제목 또는 ISBN 입력" />
+    <button class="btn-primary" id="searchBtn">검색</button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="book-list" id="bookList"></div>
+
+  <div class="save-panel hidden" id="savePanel">
+    <div class="selected-book" id="selectedBookPreview"></div>
+    <div class="format-options">
+      <button class="format-btn" data-format="종이책">📖 종이책</button>
+      <button class="format-btn" data-format="E-book">📱 E-book</button>
+    </div>
+    <button class="save-btn" id="saveBtn" disabled>책장에 저장</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ⚠️ Apps Script 배포 후 받은 웹앱 URL을 여기에 입력하세요.
+  const PROXY_URL = '여https://script.google.com/macros/s/AKfycbxrpVoXD8dxTo4qz_JxzvDLDZK7KiOx6vOyabDqLMvMWXWcC3Z9oNOUuKqDR8XFRUUA/exec';
+
+  let selectedBook = null;
+  let selectedFormat = null;
+
+  const queryInput = document.getElementById('queryInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const statusEl = document.getElementById('status');
+  const bookList = document.getElementById('bookList');
+  const savePanel = document.getElementById('savePanel');
+  const selectedBookPreview = document.getElementById('selectedBookPreview');
+  const saveBtn = document.getElementById('saveBtn');
+  const toast = document.getElementById('toast');
+
+  searchBtn.addEventListener('click', doSearch);
+  queryInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') doSearch();
+  });
+
+  document.querySelectorAll('.format-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedFormat = btn.dataset.format;
+      updateSaveButton();
+    });
+  });
+
+  saveBtn.addEventListener('click', doSave);
+
+  function doSearch() {
+    const query = queryInput.value.trim();
+    if (!query) return;
+
+    statusEl.textContent = '검색 중...';
+    bookList.innerHTML = '';
+    savePanel.classList.add('hidden');
+    selectedBook = null;
+
+    fetch(PROXY_URL + '?action=search&query=' + encodeURIComponent(query))
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success || data.books.length === 0) {
+          statusEl.textContent = '검색 결과가 없어요. 다른 검색어로 시도해보세요.';
+          return;
+        }
+        statusEl.textContent = data.books.length + '건 찾았어요. 책을 선택해주세요.';
+        renderBookList(data.books);
+      })
+      .catch(err => {
+        statusEl.textContent = '검색 중 오류가 발생했어요: ' + err.message;
+      });
+  }
+
+  function renderBookList(books) {
+    bookList.innerHTML = '';
+    books.forEach(function (book, idx) {
+      const card = document.createElement('div');
+      card.className = 'book-card';
+      card.innerHTML = `
+        <img class="book-thumb" src="${book.thumbnail || ''}" onerror="this.style.visibility='hidden'" />
+        <div class="book-info">
+          <div class="book-title">${book.title}</div>
+          <div class="book-meta">${book.author || '저자 미상'}</div>
+          <div class="book-meta">${book.publisher || ''}</div>
+        </div>
+      `;
+      card.addEventListener('click', function () {
+        document.querySelectorAll('.book-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectBook(book);
+      });
+      bookList.appendChild(card);
+    });
+  }
+
+  function selectBook(book) {
+    selectedBook = book;
+    savePanel.classList.remove('hidden');
+    selectedBookPreview.innerHTML = `
+      <img src="${book.thumbnail || ''}" onerror="this.style.visibility='hidden'" />
+      <div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px;">${book.title}</div>
+        <div style="font-size:12px;color:#888;">${book.author || ''}</div>
+        <div style="font-size:12px;color:#888;">${book.publisher || ''}</div>
+      </div>
+    `;
+    selectedFormat = null;
+    document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+    updateSaveButton();
+    savePanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function updateSaveButton() {
+    saveBtn.disabled = !(selectedBook && selectedFormat);
+  }
+
+  function doSave() {
+    if (!selectedBook || !selectedFormat) return;
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = '저장 중...';
+
+    const payload = {
+      title: selectedBook.title,
+      author: selectedBook.author,
+      publisher: selectedBook.publisher,
+      thumbnail: selectedBook.thumbnail,
+      selectOption: selectedFormat
+    };
+
+    fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'action=save&payload=' + encodeURIComponent(JSON.stringify(payload))
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showToast('책장에 저장됐어요! 📗');
+          resetForm();
+        } else {
+          showToast('저장 실패: ' + (data.message || '알 수 없는 오류'));
+          saveBtn.disabled = false;
+          saveBtn.textContent = '책장에 저장';
+        }
+      })
+      .catch(err => {
+        showToast('저장 중 오류: ' + err.message);
+        saveBtn.disabled = false;
+        saveBtn.textContent = '책장에 저장';
+      });
+  }
+
+  function resetForm() {
+    queryInput.value = '';
+    bookList.innerHTML = '';
+    savePanel.classList.add('hidden');
+    statusEl.textContent = '';
+    selectedBook = null;
+    selectedFormat = null;
+    saveBtn.textContent = '책장에 저장';
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+</script>
+
+</body>
+</html>
