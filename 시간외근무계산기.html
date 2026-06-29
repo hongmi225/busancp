@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시간외근무 계산기</title>
+<style>
+  :root{
+    --ink:#1c2b24;
+    --paper:#f6f3ec;
+    --line:#1c2b24;
+    --accent:#b5481f;
+    --accent-soft:#e8c9a8;
+    --ok:#2f5d3a;
+    --warn:#b5481f;
+    --muted:#6b6a60;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    padding:24px 16px 60px;
+  }
+  .wrap{
+    max-width:480px;
+    margin:0 auto;
+  }
+  header{
+    border-bottom:3px solid var(--line);
+    padding-bottom:14px;
+    margin-bottom:20px;
+  }
+  header .eyebrow{
+    font-size:12px;
+    letter-spacing:0.12em;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:4px;
+  }
+  header h1{
+    font-size:22px;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .tabs{
+    display:flex;
+    gap:0;
+    margin-bottom:18px;
+    border:2px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:11px 4px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    background:var(--paper);
+    color:var(--ink);
+    transition:background .15s;
+    user-select:none;
+  }
+  .tab + .tab{ border-left:2px solid var(--line); }
+  .tab.active{
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .card{
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:16px;
+  }
+  .field{
+    margin-bottom:14px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:6px;
+    color:var(--ink);
+  }
+  .field .hint{
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:4px;
+  }
+  input[type="time"]{
+    width:100%;
+    padding:11px 12px;
+    font-size:18px;
+    font-weight:600;
+    border:2px solid var(--line);
+    border-radius:8px;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:inherit;
+  }
+  input[type="time"]:focus{
+    outline:none;
+    border-color:var(--accent);
+  }
+  .row2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  button.calc{
+    width:100%;
+    padding:13px;
+    font-size:15px;
+    font-weight:700;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:9px;
+    cursor:pointer;
+    letter-spacing:0.01em;
+  }
+  button.calc:active{ transform:translateY(1px); }
+
+  .result{
+    display:none;
+    margin-top:4px;
+  }
+  .result.show{ display:block; }
+  .result-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .stat{
+    border:2px solid var(--line);
+    border-radius:10px;
+    padding:12px;
+    text-align:center;
+    background:var(--paper);
+  }
+  .stat .num{
+    font-size:20px;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+  }
+  .stat .lab{
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:2px;
+    font-weight:600;
+  }
+  .minutes-box{
+    border:3px solid var(--ink);
+    border-radius:12px;
+    padding:18px;
+    text-align:center;
+    background:var(--ink);
+    color:var(--paper);
+    margin-bottom:10px;
+  }
+  .minutes-box .big{
+    font-size:38px;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    line-height:1;
+  }
+  .minutes-box .small{
+    font-size:12px;
+    letter-spacing:0.08em;
+    margin-top:6px;
+    opacity:0.8;
+  }
+  .breakdown{
+    font-size:13px;
+    color:var(--ink);
+    background:var(--accent-soft);
+    border-radius:8px;
+    padding:10px 12px;
+    margin-bottom:10px;
+    line-height:1.5;
+  }
+  .notice{
+    font-size:12.5px;
+    border-radius:8px;
+    padding:9px 11px;
+    margin-bottom:8px;
+    line-height:1.5;
+    border:1.5px solid;
+  }
+  .notice.warn{
+    color:var(--warn);
+    border-color:var(--warn);
+    background:#fbe9e0;
+    font-weight:700;
+  }
+  .notice.ok{
+    color:var(--ok);
+    border-color:var(--ok);
+    background:#e6efe6;
+  }
+  .ledger{
+    border:2px dashed var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    margin-top:14px;
+    font-size:13px;
+  }
+  .ledger .ledger-title{
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .ledger-row{
+    display:flex;
+    justify-content:space-between;
+    padding:4px 0;
+    border-bottom:1px solid #e3ddd0;
+  }
+  .ledger-row:last-child{ border-bottom:none; }
+  .ledger-row .lv{ font-weight:700; }
+  footer{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:24px;
+    line-height:1.6;
+  }
+  .rules-toggle{
+    text-align:center;
+    margin-bottom:14px;
+  }
+  .rules-toggle button{
+    background:none;
+    border:none;
+    font-size:12.5px;
+    color:var(--muted);
+    text-decoration:underline;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .rules-box{
+    display:none;
+    font-size:12px;
+    line-height:1.7;
+    color:var(--muted);
+    background:#fff;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:14px;
+    margin-bottom:14px;
+  }
+  .rules-box.show{ display:block; }
+  .rules-box b{ color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">사업기획팀 · 시간외근무대장</div>
+    <h1>시간외근무 시간 계산기</h1>
+  </header>
+
+  <div class="rules-toggle">
+    <button onclick="toggleRules()">📋 계산 기준 보기/숨기기</button>
+  </div>
+  <div class="rules-box" id="rulesBox">
+    <div><b>공통:</b> 1일 최소 1시간 이상 인정 / 최대 4시간(240분)까지 인정 / 1주 최대 12시간 / 반기 60시간 자유 사용</div>
+    <div style="margin-top:6px;"><b>출퇴근 모드:</b> 출근시간 + 9시간(8근무+1휴게) = 정규퇴근시각. 그 이후~실제 퇴근까지가 시간외. 09:00 이전 출근분(아침)과 18:00 이후 근무분(저녁)을 합산.</div>
+    <div style="margin-top:6px;"><b>저녁 시간외 모드:</b> 시작~종료가 4시간(240분) 이상이면 휴게 30분을 제외해 210분으로 기재. 4시간 미만이면 그대로.</div>
+    <div style="margin-top:6px;"><b>저녁 22:00 초과 시:</b> 21:59 전에 퇴근 찍는 것을 권장, 넘길 경우 22:30까지는 반드시 카드 찍기.</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" id="tabA" onclick="switchTab('A')">출퇴근 전체입력</div>
+    <div class="tab" id="tabB" onclick="switchTab('B')">저녁 시간외만</div>
+  </div>
+
+  <!-- MODE A: 출퇴근 전체 -->
+  <div class="card" id="modeA">
+    <div class="field">
+      <label>출근시간</label>
+      <input type="time" id="aIn" value="07:43">
+    </div>
+    <div class="field">
+      <label>퇴근시간</label>
+      <input type="time" id="aOut" value="18:35">
+      <div class="hint">정규근무는 9시간(8근무+1휴게)으로 계산해요. 09:00 이전 출근분(아침) + 18:00 이후 근무분(저녁)을 더해서 시간외를 산출해요.</div>
+    </div>
+    <button class="calc" onclick="calcA()">계산하기</button>
+  </div>
+
+  <!-- MODE B: 저녁만 -->
+  <div class="card" id="modeB" style="display:none;">
+    <div class="field">
+      <label>시간외 시작시간</label>
+      <input type="time" id="bIn" value="18:00">
+    </div>
+    <div class="field">
+      <label>시간외 종료시간</label>
+      <input type="time" id="bOut" value="20:02">
+      <div class="hint">4시간(240분) 이상이면 휴게 30분이 자동으로 빠져서 210분으로 계산돼요.</div>
+    </div>
+    <button class="calc" onclick="calcB()">계산하기</button>
+  </div>
+
+  <div class="result" id="result">
+    <div class="minutes-box">
+      <div class="big" id="resultMinutes">0분</div>
+      <div class="small">시간외대장 기재 분</div>
+    </div>
+    <div class="result-grid">
+      <div class="stat">
+        <div class="num" id="resultStart">-</div>
+        <div class="lab">시간외 시작</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="resultEnd">-</div>
+        <div class="lab">시간외 종료</div>
+      </div>
+    </div>
+    <div class="breakdown" id="breakdown" style="display:none;"></div>
+    <div id="notices"></div>
+
+    <div class="ledger" id="ledgerBox" style="display:none;">
+      <div class="ledger-title">📌 시간외대장 기재용</div>
+      <div class="ledger-row"><span>시작시간</span><span class="lv" id="ledgerStart">-</span></div>
+      <div class="ledger-row"><span>종료시간</span><span class="lv" id="ledgerEnd">-</span></div>
+      <div class="ledger-row"><span>수당시간(분)</span><span class="lv" id="ledgerMin">-</span></div>
+    </div>
+  </div>
+
+  <footer>
+    하루 최소 60분 미만은 인정 안 됨 · 하루 최대 240분<br>
+    1주 최대 720분(12시간) · 반기 3600분(60시간)
+  </footer>
+</div>
+
+<script>
+function toggleRules(){
+  document.getElementById('rulesBox').classList.toggle('show');
+}
+
+function switchTab(t){
+  document.getElementById('tabA').classList.toggle('active', t==='A');
+  document.getElementById('tabB').classList.toggle('active', t==='B');
+  document.getElementById('modeA').style.display = t==='A' ? 'block' : 'none';
+  document.getElementById('modeB').style.display = t==='B' ? 'block' : 'none';
+  document.getElementById('result').classList.remove('show');
+}
+
+function toMin(hhmm){
+  const [h,m] = hhmm.split(':').map(Number);
+  return h*60+m;
+}
+function toHHMM(min){
+  min = ((min % 1440)+1440)%1440;
+  const h = Math.floor(min/60);
+  const m = min%60;
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+}
+
+function renderResult({startLabel, endLabel, minutes, breakdownText, notices, cappedOriginal}){
+  document.getElementById('result').classList.add('show');
+  document.getElementById('resultStart').textContent = startLabel;
+  document.getElementById('resultEnd').textContent = endLabel;
+  document.getElementById('resultMinutes').textContent = minutes + '분';
+
+  const bd = document.getElementById('breakdown');
+  if(breakdownText){
+    bd.style.display='block';
+    bd.textContent = breakdownText;
+  } else {
+    bd.style.display='none';
+  }
+
+  const noticeBox = document.getElementById('notices');
+  noticeBox.innerHTML = '';
+  notices.forEach(n=>{
+    const div = document.createElement('div');
+    div.className = 'notice ' + n.type;
+    div.textContent = n.text;
+    noticeBox.appendChild(div);
+  });
+
+  document.getElementById('ledgerBox').style.display = 'block';
+  document.getElementById('ledgerStart').textContent = startLabel;
+  document.getElementById('ledgerEnd').textContent = endLabel;
+  document.getElementById('ledgerMin').textContent = minutes + '분';
+}
+
+// MODE A: 출근/퇴근 전체 입력
+function calcA(){
+  const inVal = document.getElementById('aIn').value;
+  const outVal = document.getElementById('aOut').value;
+  if(!inVal || !outVal){ alert('출근/퇴근 시간을 입력해 주세요.'); return; }
+
+  const inMin = toMin(inVal);
+  let outMin = toMin(outVal);
+  if(outMin <= inMin) outMin += 1440; // 자정 넘김 대비
+
+  const STD_IN = toMin('09:00');
+  const STD_OUT = toMin('18:00');
+
+  // 아침 시간외: 출근이 09:00보다 빠를 때만
+  let morningMin = 0;
+  let morningStart = null, morningEnd = null;
+  if(inMin < STD_IN){
+    morningMin = STD_IN - inMin;
+    morningStart = inMin;
+    morningEnd = STD_IN;
+  }
+
+  // 저녁 시간외: 퇴근이 18:00보다 늦을 때만
+  let eveningRaw = 0;
+  let eveningStart = null, eveningEnd = null;
+  if(outMin > STD_OUT){
+    eveningRaw = outMin - STD_OUT;
+    eveningStart = STD_OUT;
+    eveningEnd = outMin;
+  }
+
+  // 저녁 구간 4시간(240) 이상이면 30분 휴게 차감
+  let eveningFinal = eveningRaw;
+  let restApplied = false;
+  if(eveningRaw >= 240){
+    eveningFinal = eveningRaw - 30;
+    restApplied = true;
+  }
+
+  let totalMinutes = morningMin + eveningFinal;
+
+  // 하루 최대 240분 캡
+  let capped = false;
+  if(totalMinutes > 240){
+    totalMinutes = 240;
+    capped = true;
+  }
+
+  // 표시용 시작/종료 시각: 시간외가 발생하는 구간의 바깥 경계
+  let startLabel, endLabel;
+  if(morningStart!==null && eveningEnd!==null){
+    startLabel = toHHMM(morningStart); // 출근시간 그대로
+    endLabel = toHHMM(eveningEnd);
+  } else if(morningStart!==null){
+    startLabel = toHHMM(morningStart);
+    endLabel = toHHMM(morningEnd);
+  } else if(eveningEnd!==null){
+    startLabel = toHHMM(eveningStart);
+    endLabel = toHHMM(eveningEnd);
+  } else {
+    startLabel = '-';
+    endLabel = '-';
+  }
+
+  let breakdownText = '';
+  if(morningMin>0 && eveningFinal>0){
+    breakdownText = `아침 ${morningMin}분(${toHHMM(morningStart)}~${toHHMM(morningEnd)}) + 저녁 ${eveningFinal}분(${toHHMM(eveningStart)}~${toHHMM(eveningEnd)}${restApplied?', 휴게30분 제외':''}) = ${morningMin+eveningFinal}분`;
+  } else if(morningMin>0){
+    breakdownText = `아침 시간외만: ${morningMin}분`;
+  } else if(eveningFinal>0){
+    breakdownText = `저녁 시간외만: ${eveningFinal}분${restApplied?' (휴게 30분 제외 적용)':''}`;
+  }
+
+  const notices = [];
+  if(totalMinutes < 60 && totalMinutes > 0){
+    notices.push({type:'warn', text:`⚠️ 총 ${morningMin+eveningFinal}분으로 1시간 미만이라 시간외수당 인정 기준(최소 60분)에 못 미쳐요.`});
+  }
+  if(totalMinutes === 0){
+    notices.push({type:'warn', text:'시간외 근무 구간이 없어요. (출근 09:00 이후, 퇴근 18:00 이전)'});
+  }
+  if(capped){
+    notices.push({type:'warn', text:`원래 합산 ${morningMin+eveningFinal}분이지만 1일 최대 240분 한도로 240분으로 캡했어요.`});
+  }
+  if(restApplied){
+    notices.push({type:'ok', text:'저녁 근무가 4시간 이상이라 휴게시간 30분이 자동 제외됐어요.'});
+  }
+  if(toMin(outVal) >= toMin('22:00')){
+    notices.push({type:'warn', text:'⏰ 22:00을 넘긴 퇕근이에요. 22:30까지는 반드시 출퇴근카드를 찍어야 해요.'});
+  }
+
+  renderResult({startLabel, endLabel, minutes: totalMinutes, breakdownText, notices});
+}
+
+// MODE B: 저녁 시간외 구간만 입력
+function calcB(){
+  const inVal = document.getElementById('bIn').value;
+  const outVal = document.getElementById('bOut').value;
+  if(!inVal || !outVal){ alert('시작/종료 시간을 입력해 주세요.'); return; }
+
+  const inMin = toMin(inVal);
+  let outMin = toMin(outVal);
+  if(outMin <= inMin) outMin += 1440;
+
+  let raw = outMin - inMin;
+  let restApplied = false;
+  let minutes = raw;
+  if(raw >= 240){
+    minutes = raw - 30;
+    restApplied = true;
+  }
+
+  let capped = false;
+  if(minutes > 240){
+    minutes = 240;
+    capped = true;
+  }
+
+  const notices = [];
+  if(minutes < 60){
+    notices.push({type:'warn', text:`⚠️ ${minutes}분으로 1시간 미만이라 시간외수당 인정 기준(최소 60분)에 못 미쳐요.`});
+  }
+  if(restApplied){
+    notices.push({type:'ok', text:'4시간(240분) 이상 근무라 휴게시간 30분이 자동 제외됐어요.'});
+  }
+  if(capped){
+    notices.push({type:'warn', text:`원래 ${raw - (restApplied?30:0)}분이지만 1일 최대 240분 한도로 240분으로 캡했어요.`});
+  }
+  if(outMin >= toMin('22:00')){
+    notices.push({type:'warn', text:'⏰ 22:00을 넘긴 퇴근이에요. 22:30까지는 반드시 출퇴근카드를 찍어야 해요.'});
+  }
+
+  renderResult({
+    startLabel: toHHMM(inMin),
+    endLabel: toHHMM(outMin),
+    minutes,
+    breakdownText: restApplied ? `실 근무 ${raw}분 − 휴게 30분 = ${minutes}분` : '',
+    notices
+  });
+}
+
+// 초기 자동 계산 (예시값으로)
+calcA();
+</script>
+</body>
+</html>
